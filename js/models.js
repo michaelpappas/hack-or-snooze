@@ -87,16 +87,10 @@ class StoryList {
       },
     });
 
-    const storyId = response.data.story.storyId;
+    const story = new Story(response.data.story);
+    this.stories.unshift(story);
 
-    return new Story({
-      storyId: storyId,
-      title: newStory.title,
-      author: newStory.author,
-      url: newStory.url,
-      username: user.username,
-      createdAt: user.createdAt,
-    });
+    return story;
   }
 }
 
@@ -209,5 +203,30 @@ class User {
       console.error("loginViaStoredCredentials failed", err);
       return null;
     }
+  }
+
+  /** add input story to current user's favorite stories */
+
+  async addFavorite(story) {
+    const response = await axios({
+      url: `${BASE_URL}/users/${currentUser.username}/favorites/${story.storyId}`,
+      method: "POST",
+      data: { token: currentUser.loginToken },
+    });
+
+    currentUser.favorites = response.data.user.favorites;
+    return response;
+  }
+
+  /** remove input story from current user's favorite stories */
+  async removeFavorite(story) {
+    const response = await axios({
+      url: `${BASE_URL}/users/${currentUser.username}/favorites/${story.storyId}`,
+      method: "DELETE",
+      data: { token: currentUser.loginToken },
+    });
+
+    currentUser.favorites = response.data.user.favorites;
+    return response;
   }
 }

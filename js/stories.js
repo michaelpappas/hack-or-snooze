@@ -50,6 +50,7 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
 /** take the submit form information and adds a new story to the page
  * clears form
  * hides form
@@ -64,10 +65,10 @@ async function addStoryToPage(evt) {
   });
 
   $storyForm.hide();
-  $storyForm[0].reset();
+  $storyForm.trigger("reset");
 
-  const newStoryHTML = generateStoryMarkup(newStory);
-  $allStoriesList.prepend(newStoryHTML);
+  const $newStoryHTML = generateStoryMarkup(newStory);
+  $allStoriesList.prepend($newStoryHTML);
 }
 
-$storyForm.on("click", "button", addStoryToPage);
+$storyForm.on("submit", addStoryToPage);
