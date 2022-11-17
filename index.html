@@ -40,9 +40,16 @@
         <a class="hidden" id="nav-logout" href="#"><small>(logout)</small></a>
       </div>
     </nav>
-
     <!-- area for stories (all stories, user stories, favorites) -->
     <section class="stories-container container">
+      <!-- form to submit story -->
+      <form id="submit-container" >
+        <label for="author-name">author</label><input type="text" placeholder="author name">
+        <label for="story-title">title</label><input type="text" placeholder="story title">
+        <label for="story-url">url</label><input type="text" placeholder="story url">
+      </form>
+
+      </div>
       <!-- loading message (removed by JS after stories loaded) -->
       <div id="stories-loading-msg">Loading&hellip;</div>
 
