@@ -31,8 +31,8 @@ function generateStoryMarkup(story) {
   );
 
   const icon = includesFavorite
-    ? '<i class="bi bi-star-fill"></i>'
-    : '<i class="bi bi-star"></i>';
+    ? `<i onclick ="empty(this)" class="bi bi-star-fill"></i>`
+    : `<i onclick ="fill(this)" class="bi bi-star"></i>`;
 
   if (currentUser) {
     return $(`
@@ -96,3 +96,32 @@ async function addStoryToPage(evt) {
 }
 
 $storyForm.on("submit", addStoryToPage);
+
+// function toggleFavorite(evt) {
+//   console.log(evt.target);
+//   const filled = "bi bi-star-filled";
+//   const empty = "bi bi-star";
+//   const currentClass = $(evt.target).attr("class");
+
+//   $(evt.target).toggleClass("bi-star-filled bi-star");
+
+//   // // .attr('class', newClass)
+//   // if (currentClass === empty) {
+//   //   // this story is not favorited
+//   //   $(evt.target).attr("class", filled);
+//   // } else {
+//   //   // this story is favorited
+//   //   $(evt.target).attr("class", empty);
+//   // }
+//   // // $(evt.target).toggle("bi-star-filled bi-star");
+// }
+
+// $allStoriesList.on("click", "i", toggleFavorite);
+
+function fill(x) {
+  $(x).attr("class", "bi bi-star-filled");
+}
+
+function empty(x) {
+  $(x).attr("class", "bi bi-star");
+}
