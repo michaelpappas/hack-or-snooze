@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
@@ -31,7 +31,9 @@ function generateStoryMarkup(story) {
 
   return $(`
       <li id="${story.storyId}">
-        ${currentUser ? iconHTML : ''} <a href="${story.url}" target="a_blank" class="story-link">
+        ${currentUser ? iconHTML : ""} <a href="${
+    story.url
+  }" target="a_blank" class="story-link">
           ${story.title}
         </a>
         <small class="story-hostname">(${hostName})</small>
@@ -44,7 +46,7 @@ function generateStoryMarkup(story) {
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
-  console.debug('putStoriesOnPage');
+  console.debug("putStoriesOnPage");
 
   $allStoriesList.empty();
 
@@ -71,37 +73,39 @@ async function addStoryToPage(evt) {
   });
 
   $storyForm.hide();
-  $storyForm.trigger('reset');
+  $storyForm.trigger("reset");
 
   const $newStoryHTML = generateStoryMarkup(newStory);
   $allStoriesList.prepend($newStoryHTML);
+  checkForRememberedUser();
 }
 
-$storyForm.on('submit', addStoryToPage);
+$storyForm.on("submit", addStoryToPage);
 
 /** When the star next to the story is clicked on, updates current user's favorite stories
  *  in the server and the current page.
  */
 
-function toggleFavorite(evt) {
-  const storyId = $(evt.target).closest('li').attr('id');
+async function toggleFavorite(evt) {
+  const storyId = $(evt.target).closest("li").attr("id");
   // MAKE THIS INTO A STATIC METHOD INSTEAD
-  const story = storyList.stories.find((story) => story.storyId === storyId);
-
+  const story = await Story.getStory(storyId);
+  console.log(story);
   if (includesFavorite(storyId)) {
-    currentUser.removeFavorite(story);
-    $(evt.target).toggleClass('bi-star-fill bi-star');
+    currentUser.updateFavorite(story, "DELETE");
+    $(evt.target).toggleClass("bi-star-fill bi-star");
   } else {
-    currentUser.addFavorite(story);
-    $(evt.target).toggleClass('bi-star-fill bi-star');
+    currentUser.updateFavorite(story, "POST");
+    $(evt.target).toggleClass("bi-star-fill bi-star");
   }
 
   return;
 }
 
-$allStoriesList.on('click', 'i', toggleFavorite);
+$allStoriesList.on("click", "i", toggleFavorite);
 
 /** Checks if story ID is in current user's favorites*/
 function includesFavorite(id) {
-  if (currentUser) return currentUser.favorites.some((favorite) => favorite.storyId === id);
+  if (currentUser)
+    return currentUser.favorites.some((favorite) => favorite.storyId === id);
 }
