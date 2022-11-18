@@ -23,7 +23,22 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
-  return $(`
+  const icon = currentUser.favorites.includes(story)
+    ? '<i class="bi bi-star-fill"></i>'
+    : '<i class="bi bi-star"></i>';
+  if (currentUser) {
+    return $(`
+      <li id="${story.storyId}">
+        ${icon} <a href="${story.url}" target="a_blank" class="story-link">
+          ${story.title}
+        </a>
+        <small class="story-hostname">(${hostName})</small>
+        <small class="story-author">by ${story.author}</small>
+        <small class="story-user">posted by ${story.username}</small>
+      </li>
+    `);
+  } else {
+    return $(`
       <li id="${story.storyId}">
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -33,6 +48,7 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+  }
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
