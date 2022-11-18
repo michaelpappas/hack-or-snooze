@@ -29,7 +29,9 @@ function generateStoryMarkup(story) {
     ? `<i class="bi bi-star-fill fav"></i>`
     : `<i class="bi bi-star fav"></i>`;
 
-  const deleteIconHTML = viewingOwnStories ? `<i class="bi bi-trash del"></i>` : "";
+  const deleteIconHTML = viewingOwnStories
+    ? `<i class="bi bi-trash del"></i>`
+    : "";
 
   return $(`
       <li id="${story.storyId}">
@@ -118,8 +120,24 @@ function addOwnStories() {
 }
 
 /**  */
-function deleteStory(evt) {
+async function deleteStory(evt) {
   const storyId = $(evt.target).closest("li").attr("id");
+  await axios({
+    url: `${BASE_URL}/stories/${storyId}`,
+    method: "DELETE",
+    data: {
+      token: currentUser.loginToken,
+    },
+  });
+  // const deletedStory = storyList.stories.find(
+  //   (story) => story.storyId === storyId
+  // );
+
+  $allStoriesList.empty();
+
+  debugger;
+
+  addOwnStories();
 }
 
 $allStoriesList.on("click", "i.del", deleteStory);
@@ -127,11 +145,11 @@ $allStoriesList.on("click", "i.del", deleteStory);
 /** Checks if story ID is in current user's favorites*/
 
 function includesFavorite(id) {
-  if (currentUser) return currentUser.favorites.some((favorite) => favorite.storyId === id);
+  if (currentUser)
+    return currentUser.favorites.some((favorite) => favorite.storyId === id);
 }
 
 /** Checks if story with input story Id belongs to current user */
 function isMyStory(id) {
-  console.log(currentUser.ownStories);
   return currentUser.ownStories.some((story) => story.storyId === id);
 }
