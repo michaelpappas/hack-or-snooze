@@ -23,9 +23,17 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
-  const icon = currentUser.favorites.includes(story)
+
+  const storyId = story.storyId; // "c6d65c21-7a70-4f29-affa-c764b3308e07"
+
+  const includesFavorite = currentUser.favorites.some(
+    (favorite) => favorite.storyId === storyId
+  );
+
+  const icon = includesFavorite
     ? '<i class="bi bi-star-fill"></i>'
     : '<i class="bi bi-star"></i>';
+
   if (currentUser) {
     return $(`
       <li id="${story.storyId}">

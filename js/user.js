@@ -114,13 +114,3 @@ function updateUIOnUserLogin() {
 
   updateNavOnLogin();
 }
-
-async function addFavorite(story) {
-  const response = await axios({
-    url: `${BASE_URL}/${story.username}/favorite/${story.storyId}`,
-    method: "POST",
-    data: { token: currentUser.loginToken },
-  });
-
-  console.log(response);
-}
