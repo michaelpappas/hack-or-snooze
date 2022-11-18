@@ -48,6 +48,7 @@ $navSubmit.on("click", showStoryForm);
 /** Shows the current user's favorite stories when you click favorites on nav bar */
 
 function showFavorites() {
+  viewingOwnStories = false;
   $storyForm.hide();
   $allStoriesList.empty();
 
@@ -63,6 +64,7 @@ $navFavorites.on("click", showFavorites);
 
 /** Shows default stories on homepage when you click on Hack or Snooze on nav bar */
 function resetPage() {
+  viewingOwnStories = false;
   $storyForm.hide();
   putStoriesOnPage();
 }
@@ -70,20 +72,10 @@ function resetPage() {
 $navAll.on("click", resetPage);
 
 function showMyStories() {
+  viewingOwnStories = true;
   $allStoriesList.empty();
   $storyForm.hide();
-
-  for (let story of storyList.stories) {
-    if (isMyStory(story.storyId)) {
-      const $story = generateStoryMarkup(story);
-      $allStoriesList.append($story);
-    }
-  }
-}
-
-function isMyStory(id) {
-  console.log(currentUser.ownStories);
-  return currentUser.ownStories.some((story) => story.storyId === id);
+  addOwnStories();
 }
 
 $navMyStories.on("click", showMyStories);

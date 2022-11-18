@@ -25,13 +25,15 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   const storyId = story.storyId; // "c6d65c21-7a70-4f29-affa-c764b3308e07"
 
-  const iconHTML = includesFavorite(storyId)
-    ? `<i class="bi bi-star-fill"></i>`
-    : `<i class="bi bi-star"></i>`;
+  const favIconHTML = includesFavorite(storyId)
+    ? `<i class="bi bi-star-fill fav"></i>`
+    : `<i class="bi bi-star fav"></i>`;
+
+  const deleteIconHTML = viewingOwnStories ? `<i class="bi bi-trash del"></i>` : "";
 
   return $(`
       <li id="${story.storyId}">
-        ${currentUser ? iconHTML : ""} <a href="${
+        ${deleteIconHTML}${currentUser ? favIconHTML : ""} <a href="${
     story.url
   }" target="a_blank" class="story-link">
           ${story.title}
@@ -75,7 +77,9 @@ async function addStoryToPage(evt) {
   $storyForm.hide();
   $storyForm.trigger("reset");
 
+  viewingOwnStories = false;
   const $newStoryHTML = generateStoryMarkup(newStory);
+  resetPage();
   $allStoriesList.prepend($newStoryHTML);
   checkForRememberedUser();
 }
@@ -102,10 +106,32 @@ async function toggleFavorite(evt) {
   return;
 }
 
-$allStoriesList.on("click", "i", toggleFavorite);
+$allStoriesList.on("click", "i.fav", toggleFavorite);
+
+function addOwnStories() {
+  for (let story of storyList.stories) {
+    if (isMyStory(story.storyId)) {
+      const $story = generateStoryMarkup(story);
+      $allStoriesList.append($story);
+    }
+  }
+}
+
+/**  */
+function deleteStory(evt) {
+  const storyId = $(evt.target).closest("li").attr("id");
+}
+
+$allStoriesList.on("click", "i.del", deleteStory);
 
 /** Checks if story ID is in current user's favorites*/
+
 function includesFavorite(id) {
-  if (currentUser)
-    return currentUser.favorites.some((favorite) => favorite.storyId === id);
+  if (currentUser) return currentUser.favorites.some((favorite) => favorite.storyId === id);
+}
+
+/** Checks if story with input story Id belongs to current user */
+function isMyStory(id) {
+  console.log(currentUser.ownStories);
+  return currentUser.ownStories.some((story) => story.storyId === id);
 }
