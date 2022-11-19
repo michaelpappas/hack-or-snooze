@@ -184,8 +184,7 @@ class User {
   }
 
   /** When we already have credentials (token & username) for a user,
-   *   we can log them in automatically. This function does that.
-   */
+   *   we can log them in automatically. This function does that. */
 
   static async loginViaStoredCredentials(token, username) {
     try {
@@ -213,40 +212,21 @@ class User {
     }
   }
 
+  /** Gets latest information about user and updates locally. */
+
   static async updateCurrentUser(username, token) {
     const response = await axios({
       url: `${BASE_URL}/users/${username}`,
       method: "GET",
       params: { token },
     });
-    return response.data;
+
+    currentUser.ownStories = response.data.user.stories;
+    currentUser.favorites = response.data.user.favorites;
   }
 
-  /** add input story to current user's favorite stories */
-
-  // async addFavorite(story) {
-  //   const response = await axios({
-  //     url: `${BASE_URL}/users/${currentUser.username}/favorites/${story.storyId}`,
-  //     method: 'POST',
-  //     data: { token: currentUser.loginToken },
-  //   });
-
-  //   currentUser.favorites = response.data.user.favorites;
-  //   return response;
-  // }
-
-  // /** remove input story from current user's favorite stories */
-
-  // async removeFavorite(story) {
-  //   const response = await axios({
-  //     url: `${BASE_URL}/users/${currentUser.username}/favorites/${story.storyId}`,
-  //     method: 'DELETE',
-  //     data: { token: currentUser.loginToken },
-  //   });
-
-  //   currentUser.favorites = response.data.user.favorites;
-  //   return response;
-  // }
+  /** Either adds or removes a favorite depending on input argument
+   *  and updates locally. */
 
   async updateFavorite(story, method) {
     const response = await axios({
@@ -259,5 +239,3 @@ class User {
     return response;
   }
 }
-
-// COMBINE ABOVE TWO METHODS INTO ONE

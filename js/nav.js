@@ -37,7 +37,8 @@ function updateNavOnLogin() {
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
-/** Shows the story submission form when you click submit on nav bar*/
+/** Shows the story submission form when you click submit on nav bar. */
+
 function showStoryForm() {
   putStoriesOnPage();
   $("#story-form").show();
@@ -45,7 +46,7 @@ function showStoryForm() {
 
 $navSubmit.on("click", showStoryForm);
 
-/** Shows the current user's favorite stories when you click favorites on nav bar */
+/** Shows the current user's favorite stories when you click favorites on nav bar. */
 
 function showFavorites() {
   viewingOwnStories = false;
@@ -62,7 +63,8 @@ function showFavorites() {
 
 $navFavorites.on("click", showFavorites);
 
-/** Shows default stories on homepage when you click on Hack or Snooze on nav bar */
+/** Shows default stories on homepage when you click on Hack or Snooze on nav bar. */
+
 function resetPage() {
   viewingOwnStories = false;
   $storyForm.hide();
@@ -70,6 +72,8 @@ function resetPage() {
 }
 
 $navAll.on("click", resetPage);
+
+/** Shows only own stories on page. */
 
 function showMyStories() {
   viewingOwnStories = true;

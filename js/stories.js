@@ -29,9 +29,7 @@ function generateStoryMarkup(story) {
     ? `<i class="bi bi-star-fill fav"></i>`
     : `<i class="bi bi-star fav"></i>`;
 
-  const deleteIconHTML = viewingOwnStories
-    ? `<i class="bi bi-trash del"></i>`
-    : "";
+  const deleteIconHTML = viewingOwnStories ? `<i class="bi bi-trash del"></i>` : "";
 
   return $(`
       <li id="${story.storyId}">
@@ -96,7 +94,6 @@ async function toggleFavorite(evt) {
   const storyId = $(evt.target).closest("li").attr("id");
   // MAKE THIS INTO A STATIC METHOD INSTEAD
   const story = await Story.getStory(storyId);
-  console.log(story);
   if (includesFavorite(storyId)) {
     currentUser.updateFavorite(story, "DELETE");
     $(evt.target).toggleClass("bi-star-fill bi-star");
@@ -110,6 +107,8 @@ async function toggleFavorite(evt) {
 
 $allStoriesList.on("click", "i.fav", toggleFavorite);
 
+/** Changes the storylist to only contain own stories. */
+
 function addOwnStories() {
   for (let story of storyList.stories) {
     if (isMyStory(story.storyId)) {
@@ -119,7 +118,9 @@ function addOwnStories() {
   }
 }
 
-/**  */
+/** When trash icon next to the story is clicked, deletes story from server
+ *  and the current page. */
+
 async function deleteStory(evt) {
   const storyId = $(evt.target).closest("li").attr("id");
   await axios({
@@ -129,14 +130,15 @@ async function deleteStory(evt) {
       token: currentUser.loginToken,
     },
   });
-  // const deletedStory = storyList.stories.find(
-  //   (story) => story.storyId === storyId
-  // );
+  User.updateCurrentUser(currentUser.username, currentUser.loginToken);
+  updateOwnStories();
+}
 
+/** Get latest stories from the server and then display only own stories. */
+async function updateOwnStories() {
   $allStoriesList.empty();
 
-  debugger;
-
+  storyList = await StoryList.getStories();
   addOwnStories();
 }
 
@@ -145,8 +147,7 @@ $allStoriesList.on("click", "i.del", deleteStory);
 /** Checks if story ID is in current user's favorites*/
 
 function includesFavorite(id) {
-  if (currentUser)
-    return currentUser.favorites.some((favorite) => favorite.storyId === id);
+  if (currentUser) return currentUser.favorites.some((favorite) => favorite.storyId === id);
 }
 
 /** Checks if story with input story Id belongs to current user */
